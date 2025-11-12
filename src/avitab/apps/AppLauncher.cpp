@@ -25,6 +25,7 @@
 #include "RouteApp.h"
 #include "MapApp.h"
 #include "ProvidersApp.h"
+#include "YouTubeLiveApp.h"
 #include "src/libimg/Image.h"
 
 namespace avitab {
@@ -42,6 +43,7 @@ AppLauncher::AppLauncher(FuncsPtr appFuncs):
     addEntry<MapApp>("Maps", root + "if_starthere_18227.png", AppId::MAPS);
     addEntry<PlaneManualApp>("Aircraft", root + "if_ilustracoes_04-11_1519786.png", AppId::PLANE_MANUAL);
     addEntry<NotesApp>("Notes", root + "if_txt2_3783.png", AppId::NOTES);
+    addEntry<YouTubeLiveApp>("YouTube", root + "youtube.png", AppId::YOUTUBE);
 
     if (api().getChartService()->getNavigraph()->isSupported() || api().getChartService()->getChartFox()->isSupported()) {
         addEntry<ProvidersApp>("Providers", root + "if_Airport_22906.png", AppId::NAVIGRAPH);

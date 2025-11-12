@@ -15,6 +15,7 @@
  *   You should have received a copy of the GNU Affero General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include <cstring>
 #include <lib/lvgl/src/lv_core/lv_style.h>
 #include "Button.h"
 #include "src/Logger.h"
@@ -124,6 +125,18 @@ void Button::setToggleable(bool toggleable) {
 
 void Button::setToggleState(bool toggled) {
     lv_btn_set_state(obj(), toggled ? LV_BTN_STATE_TGL_PR : LV_BTN_STATE_REL);
+}
+
+void Button::setText(const std::string &text) {
+    lv_obj_t *child = nullptr;
+    while ((child = lv_obj_get_child(obj(), child)) != nullptr) {
+        lv_obj_type_t type {};
+        lv_obj_get_type(child, &type);
+        if (std::strcmp(type.type[0], "lv_label") == 0) {
+            lv_label_set_text(child, text.c_str());
+            break;
+        }
+    }
 }
 
 } /* namespace avitab */

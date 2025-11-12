@@ -38,6 +38,8 @@ public:
     void setToggleable(bool toggleable);
     void setToggleState(bool toggled);
     void setFit(bool hor, bool vert);
+    void setText(const std::string &text);
+
 private:
     img::Image iconData;
     lv_img_dsc_t iconImage;

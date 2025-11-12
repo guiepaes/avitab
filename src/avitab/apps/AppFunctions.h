@@ -35,6 +35,7 @@ enum class AppId {
     PLANE_MANUAL,
     NOTES,
     NAVIGRAPH,
+    YOUTUBE,
     ABOUT,
 };
 

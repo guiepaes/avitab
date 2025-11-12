@@ -12,4 +12,5 @@ target_sources(avitab_common PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/RouteApp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MapApp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ProvidersApp.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/YouTubeLiveApp.cpp
 )
