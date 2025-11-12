@@ -2,13 +2,14 @@
 
 # Constants
 BUILD_FOLDER="$(pwd)"/build
+CMAKE_POLICY_FLAGS=(-DCMAKE_POLICY_VERSION_MINIMUM=3.5)
 
 aptInstall() {
   sudo apt install -y "$1"
 }
 
 pacmanInstall() {
-  pacman -S "$1"
+  pacman -S --needed --noconfirm "$1"
 }
 
 brewInstall() {
@@ -44,8 +45,19 @@ plugin() {
 }
 
 # OS Detection
-case "$OSTYPE" in
-linux*)
+detect_platform() {
+  if [ -n "$OSTYPE" ]; then
+    printf '%s' "$OSTYPE"
+    return
+  fi
+
+  uname -s 2>/dev/null | tr '[:upper:]' '[:lower:]'
+}
+
+PLATFORM=$(detect_platform)
+
+case "$PLATFORM" in
+linux*|gnu/linux*)
   echo "Linux detected..."
   aptInstall cmake
   aptInstall make
@@ -56,7 +68,7 @@ linux*)
   aptInstall libglfw3-dev
   aptInstall uuid-dev
   ;;
-msys*)
+msys*|mingw*)
   echo "Windows detected..."
   echo "Have you installed MSYS2?"
   printf "1. Yes\n2. No\n"
@@ -64,6 +76,19 @@ msys*)
   read -r answer
 
   if [ "$answer" == "1" ]; then
+        if ! command -v pacman >/dev/null 2>&1; then
+      cat <<'EOF'
+pacman was not found in your PATH. Please launch the "MSYS2 MinGW 64-bit"
+terminal that ships with MSYS2 and run this script from there so that the
+toolchain and package manager are available.
+
+O comando pacman não foi encontrado na sua variável PATH. Abra o terminal
+"MSYS2 MinGW 64-bit" (disponibilizado pelo MSYS2) e execute este script a
+partir dele para garantir que as ferramentas de compilação e o gerenciador de
+pacotes estejam disponíveis.
+EOF
+      exit 1
+    fi
     pacmanInstall mingw-w64-x86_64-toolchain
     pacmanInstall mingw64/mingw-w64-x86_64-cmake
     pacmanInstall msys/git
@@ -105,7 +130,7 @@ darwin*)
   fi
   ;;
 *)
-  echo "Unkown system, exiting..."
+ echo "Unknown system, exiting..."
   exit
   ;;
 esac
@@ -116,7 +141,7 @@ echo "Running build_dependencies..."
 
 # Setup build folder properly
 echo "Running CMake..."
-cmake -G 'Unix Makefiles' -B "$BUILD_FOLDER"
+cmake -G 'Unix Makefiles' -B "$BUILD_FOLDER" "${CMAKE_POLICY_FLAGS[@]}"
 
 echo "Select next step..."
 printf "1. Make AviTab-Standalone\n2. Make avitab-plugin\n3. Nothing\n"
